@@ -42,6 +42,16 @@ class TestReadLineAt:
         assert line == LINES[0]
         assert offset == 0
 
+    def test_reads_last_line(self):
+        """Verify _read_line_at can locate the final line in the file."""
+        fh = _make_fh(LINES)
+        # Position just before the last line by seeking to a byte inside it.
+        fh.seek(0, 2)
+        file_size = fh.tell()
+        # Seek to two bytes before the end of the second-to-last newline.
+        offset, line = _read_line_at(fh, file_size - 5)
+        assert line == LINES[-1]
+
 
 class TestFindStartOffset:
     def test_start_before_all_lines_returns_zero(self):

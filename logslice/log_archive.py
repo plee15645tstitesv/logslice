@@ -65,3 +65,20 @@ class LogArchive:
             opener = gzip.open if path.suffix == ".gz" else open
             with opener(path, "rt", errors="replace") as fh:  # type: ignore[call-overload]
                 yield from fh
+
+    def grep(self, pattern: str) -> Iterator[str]:
+        """Yield lines matching *pattern* across all files, oldest first.
+
+        The match is a simple case-sensitive substring check.  For more
+        advanced filtering callers should use :meth:`iter_lines` directly
+        with their own predicate.
+
+        Args:
+            pattern: Substring to search for in each line.
+
+        Yields:
+            Lines that contain *pattern* (newline included if present).
+        """
+        for line in self.iter_lines():
+            if pattern in line:
+                yield line
